@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Game {
+  id              String   @id @default(cuid())
+  steamAppId     Int      @unique
+  name           String
+  type           String?  // "game", "dlc", "demo", etc.
+  headerImage    String?  // URL to header image
+  developers     String?  // JSON array of developer names
+  publishers     String?  // JSON array of publisher names
+  releaseDate    String?  // Release date string
+  genres         String?  // JSON array of genre IDs and names
+  shortDescription String? // Short description
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  priceHistory   PriceHistory[]
+  watchlists     Watchlist[]
+
+  @@index([steamAppId])
+  @@index([name])
+}
+
+model PriceHistory {
+  id            String   @id @default(cuid())
+  gameId        String
+  game          Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  currency      String   // e.g., "USD", "EUR"
+  initialPrice  Int?     // Price in smallest currency unit (cents)
+  finalPrice    Int      // Current/final price in smallest currency unit
+  discountPercent Int?   // Discount percentage (0-100)
+  isOnSale      Boolean  @default(false)
+  
+  recordedAt    DateTime @default(now())
+
+  @@index([gameId, recordedAt])
+  @@index([recordedAt])
+  @@index([isOnSale])
+}
+
+model Watchlist {
+  id            String   @id @default(cuid())
+  email         String
+  gameId        String
+  game          Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  // Notification preferences
+  notifyOnSale  Boolean  @default(true)  // Notify when game goes on sale
+  minDiscountPercent Int? // Only notify if discount is >= this percentage (optional)
+  targetPrice   Int?     // Only notify if price drops to or below this (optional, in cents)
+  
+  // Tracking
+  lastNotifiedAt DateTime? // Last time we sent a notification
+  isActive      Boolean  @default(true)   // Can disable without deleting
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([email, gameId]) // One watchlist entry per email per game
+  @@index([gameId])
+  @@index([email])
+  @@index([isActive])
+}
