@@ -67,7 +67,8 @@ export async function GET(request: Request) {
           watchlist.minDiscountPercent !== null &&
           currentPriceHistory.discountPercent !== null &&
           currentPriceHistory.discountPercent >= watchlist.minDiscountPercent &&
-          (previousPriceHistory?.discountPercent === null ||
+          (!previousPriceHistory ||
+            previousPriceHistory.discountPercent === null ||
             previousPriceHistory.discountPercent < watchlist.minDiscountPercent)
         ) {
           shouldNotify = true;
