@@ -4,21 +4,7 @@ import { db } from "@/server/db";
 import { getAppDetails } from "@/server/services/steam";
 import { sendPriceDropEmail } from "@/server/services/email";
 
-/**
- * Cron job endpoint to check for price drops and send email notifications
- * 
- * This should be called periodically (e.g., every hour or every 6 hours)
- * 
- * To set up Vercel Cron, add to vercel.json:
- * {
- *   "crons": [{
- *     "path": "/api/cron/check-price-drops",
- *     "schedule": "0 */6 * * *"
- *   }]
- * }
- */
 export async function GET(request: Request) {
-  // Optional: Add authentication/authorization check
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 

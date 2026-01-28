@@ -3,22 +3,6 @@ import { NextResponse } from "next/server";
 import { db } from "@/server/db";
 import { getPopularGamesOnSale, getAppDetails } from "@/server/services/steam";
 
-/**
- * Cron job endpoint to sync prices for popular games on sale
- * 
- * This can be called by:
- * - Vercel Cron: https://vercel.com/docs/cron-jobs
- * - GitHub Actions
- * - External cron service (cron-job.org, etc.)
- * 
- * To set up Vercel Cron, add to vercel.json:
- * {
- *   "crons": [{
- *     "path": "/api/cron/sync-prices",
- *     "schedule": "0 */6 * * *"
- *   }]
- * }
- */
 export async function GET(request: Request) {
   // Optional: Add authentication/authorization check
   const authHeader = request.headers.get("authorization");
