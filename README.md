@@ -1,4 +1,4 @@
-# Steam Game Price Checker
+# Steam Game Price Checker  
 
 A Next.js application built with the T3 Stack that tracks Steam game prices and displays price history. Search for games, view current prices, and see historical price data with beautiful charts.
 
