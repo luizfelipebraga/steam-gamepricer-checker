@@ -125,6 +125,11 @@ export interface SteamAppDetailsResponse {
   };
 }
 
+export type SteamAppDetailsResponseRecord = Record<string, {
+  success: boolean;
+  data?: SteamAppDetails;
+}>;
+
 export interface FeaturedCategories {
   specials?: {
     id: string;
@@ -194,7 +199,7 @@ export interface FeaturedCategories {
  */
 export async function getAppDetails(
   appId: number,
-  currency: string = "us",
+  currency = "us",
 ): Promise<SteamAppDetails | null> {
   try {
     const url = `https://store.steampowered.com/api/appdetails?appids=${appId}&cc=${currency}`;
@@ -206,7 +211,7 @@ export async function getAppDetails(
       throw new Error(`Steam API error: ${response.status}`);
     }
 
-    const data = (await response.json()) as SteamAppDetailsResponse;
+    const data = (await response.json()) as SteamAppDetailsResponseRecord;
     const appData = data[appId.toString()];
 
     if (!appData?.success || !appData.data) {
@@ -247,7 +252,7 @@ export async function getFeaturedCategories(): Promise<FeaturedCategories | null
  * Note: Steam doesn't have an official search API, so we'll need to use
  * the store search page or implement our own search using app details
  */
-export async function searchGames(query: string): Promise<number[]> {
+export async function searchGames(_query: string): Promise<number[]> {
   // Steam doesn't provide a public search API
   // This is a placeholder - in production, you might want to:
   // 1. Use a third-party API like SteamDB
@@ -264,7 +269,7 @@ export async function searchGames(query: string): Promise<number[]> {
  * Optionally fetches individual game details with country code for accurate pricing
  */
 export async function getPopularGamesOnSale(
-  limit: number = 50,
+  limit = 50,
   countryCode?: string,
 ): Promise<Array<{
   appId: number;

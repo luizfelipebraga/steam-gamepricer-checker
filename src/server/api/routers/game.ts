@@ -4,7 +4,6 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import {
   getAppDetails,
   getPopularGamesOnSale,
-  type SteamAppDetails,
 } from "@/server/services/steam";
 
 export const gameRouter = createTRPCRouter({
@@ -66,21 +65,24 @@ export const gameRouter = createTRPCRouter({
         .filter((game) => game.name.toLowerCase().includes(searchQuery))
         .slice(0, input.limit);
 
-      return filteredGames.map((game) => ({
-        id: game.id,
-        steamAppId: game.steamAppId,
-        name: game.name,
-        headerImage: game.headerImage,
-        currentPrice: game.priceHistory[0]
-          ? {
-              currency: game.priceHistory[0].currency,
-              finalPrice: game.priceHistory[0].finalPrice,
-              initialPrice: game.priceHistory[0].initialPrice,
-              discountPercent: game.priceHistory[0].discountPercent,
-              isOnSale: game.priceHistory[0].isOnSale,
-            }
-          : null,
-      }));
+      return filteredGames.map((game) => {
+        const firstPrice = game.priceHistory?.[0];
+        return {
+          id: game.id,
+          steamAppId: game.steamAppId,
+          name: game.name,
+          headerImage: game.headerImage,
+          currentPrice: firstPrice
+            ? {
+                currency: firstPrice.currency,
+                finalPrice: firstPrice.finalPrice,
+                initialPrice: firstPrice.initialPrice,
+                discountPercent: firstPrice.discountPercent,
+                isOnSale: firstPrice.isOnSale,
+              }
+            : null,
+        };
+      });
     }),
 
   /**
@@ -114,7 +116,7 @@ export const gameRouter = createTRPCRouter({
       if (!game || input.sync) {
         const steamData = await getAppDetails(
           input.appId,
-          input.countryCode || "us",
+          input.countryCode ?? "us",
         );
         if (!steamData) {
           throw new Error("Game not found");

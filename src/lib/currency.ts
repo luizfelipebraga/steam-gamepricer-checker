@@ -55,7 +55,7 @@ export function detectCountryFromLocale(): string {
   if (typeof window === "undefined") return "us";
   
   // Try to get from navigator.language or navigator.languages
-  const locale = navigator.language || navigator.languages?.[0] || "en-US";
+  const locale = navigator.language ?? navigator.languages?.[0] ?? "en-US";
   
   // Extract country code from locale (e.g., "pt-BR" -> "BR")
   const parts = locale.split("-");
@@ -90,7 +90,7 @@ export function detectCountryFromLocale(): string {
  * Get currency info from country code
  */
 export function getCurrencyInfo(countryCode?: string): CurrencyInfo {
-  const code = (countryCode || detectCountryFromLocale()).toUpperCase();
+  const code = (countryCode ?? detectCountryFromLocale()).toUpperCase();
   return COUNTRY_TO_CURRENCY[code] ?? COUNTRY_TO_CURRENCY.DEFAULT!;
 }
 
@@ -109,7 +109,7 @@ export function formatPrice(price: number, currency: string, locale?: string): s
   const currencyInfo = Object.values(COUNTRY_TO_CURRENCY).find(
     (info) => info.currency === currency,
   );
-  const formatLocale = locale || currencyInfo?.locale || "en-US";
+  const formatLocale = locale ?? currencyInfo?.locale ?? "en-US";
   
   return new Intl.NumberFormat(formatLocale, {
     style: "currency",
