@@ -118,14 +118,7 @@ export interface SteamAppDetails {
   };
 }
 
-export interface SteamAppDetailsResponse {
-  [appId: string]: {
-    success: boolean;
-    data?: SteamAppDetails;
-  };
-}
-
-export type SteamAppDetailsResponseRecord = Record<string, {
+export type SteamAppDetailsResponse = Record<string, {
   success: boolean;
   data?: SteamAppDetails;
 }>;
@@ -211,7 +204,7 @@ export async function getAppDetails(
       throw new Error(`Steam API error: ${response.status}`);
     }
 
-    const data = (await response.json()) as SteamAppDetailsResponseRecord;
+    const data = (await response.json()) as SteamAppDetailsResponse;
     const appData = data[appId.toString()];
 
     if (!appData?.success || !appData.data) {

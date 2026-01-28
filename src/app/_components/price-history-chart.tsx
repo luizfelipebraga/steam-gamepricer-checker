@@ -73,7 +73,7 @@ export function PriceHistoryChart({
             stroke="#9ca3af"
             fontSize={12}
             tickLine={{ stroke: "#9ca3af" }}
-            tickFormatter={(value) =>
+            tickFormatter={(value: number) =>
               formatPrice(value, currency, currencyInfo.locale)
             }
           />

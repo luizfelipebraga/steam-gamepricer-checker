@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/server/db";
-import { getAppDetails } from "@/server/services/steam";
 import { sendPriceDropEmail } from "@/server/services/email";
 
 export async function GET(request: Request) {
@@ -57,7 +56,7 @@ export async function GET(request: Request) {
         // Check if game just went on sale
         if (
           currentPriceHistory.isOnSale &&
-          (!previousPriceHistory || !previousPriceHistory.isOnSale)
+          !previousPriceHistory?.isOnSale
         ) {
           shouldNotify = true;
           reason = "Game just went on sale";
@@ -68,8 +67,7 @@ export async function GET(request: Request) {
           watchlist.minDiscountPercent !== null &&
           currentPriceHistory.discountPercent !== null &&
           currentPriceHistory.discountPercent >= watchlist.minDiscountPercent &&
-          (!previousPriceHistory ||
-            previousPriceHistory.discountPercent === null ||
+          (previousPriceHistory?.discountPercent === null ||
             previousPriceHistory.discountPercent < watchlist.minDiscountPercent)
         ) {
           shouldNotify = true;
@@ -117,7 +115,7 @@ export async function GET(request: Request) {
 
         if (shouldNotify) {
           // Send email notification
-          const gameUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/game/${game.steamAppId}`;
+          const gameUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/game/${game.steamAppId}`;
           const steamUrl = `https://store.steampowered.com/app/${game.steamAppId}`;
 
           const emailSent = await sendPriceDropEmail(watchlist.email, {

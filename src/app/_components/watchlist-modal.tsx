@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import { api } from "@/trpc/react";
-import { formatPrice } from "@/lib/currency";
 
 interface WatchlistModalProps {
   gameId: string;
@@ -16,7 +15,7 @@ interface WatchlistModalProps {
 
 export function WatchlistModal({
   gameId,
-  steamAppId,
+  steamAppId: _steamAppId,
   gameName,
   isOpen,
   onClose,
@@ -102,9 +101,9 @@ export function WatchlistModal({
         {initialIsWatching ? (
           <div className="space-y-4">
             <div className="rounded-lg bg-yellow-500/20 p-4 text-yellow-400">
-              <p className="font-semibold">You're already watching this game!</p>
+              <p className="font-semibold">You&apos;re already watching this game!</p>
               <p className="mt-2 text-sm text-gray-300">
-                You'll receive email notifications when the price drops or goes on sale.
+                You&apos;ll receive email notifications when the price drops or goes on sale.
               </p>
             </div>
             <div className="space-y-2">
@@ -154,7 +153,7 @@ export function WatchlistModal({
                 className="w-full rounded border border-gray-600 bg-gray-700 px-4 py-2 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="mt-1 text-xs text-gray-400">
-                We'll send you an email when this game goes on sale
+                We&apos;ll send you an email when this game goes on sale
               </p>
             </div>
 
