@@ -91,7 +91,7 @@ export function detectCountryFromLocale(): string {
  */
 export function getCurrencyInfo(countryCode?: string): CurrencyInfo {
   const code = (countryCode || detectCountryFromLocale()).toUpperCase();
-  return COUNTRY_TO_CURRENCY[code] || COUNTRY_TO_CURRENCY.DEFAULT;
+  return COUNTRY_TO_CURRENCY[code] ?? COUNTRY_TO_CURRENCY.DEFAULT!;
 }
 
 /**
