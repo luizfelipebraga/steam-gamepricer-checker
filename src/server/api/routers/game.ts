@@ -215,6 +215,10 @@ export const gameRouter = createTRPCRouter({
         }
       }
 
+      if (!game) {
+        throw new Error("Game not found");
+      }
+
       return {
         id: game.id,
         steamAppId: game.steamAppId,
